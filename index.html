@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineFlow AI - النسخة المطورة</title>
+    <style>
+        *{box-sizing:border-box}
+        body{ margin:0; font-family:Arial,sans-serif; background:#0b0b12; color:#fff; }
+        header{ padding:20px; text-align:center; border-bottom:1px solid #292936; }
+        .logo{ font-size:28px; font-weight:bold; }
+        .logo span{color:#8b5cf6}
+        .container{ max-width:900px; margin:auto; padding:25px 18px; }
+        .hero{ text-align:center; padding:30px 0; }
+        .hero h1{ font-size:38px; margin-bottom:10px; }
+        .hero p{ color:#aaa; font-size:17px; }
+        .card{ background:#15151f; border:1px solid #292936; border-radius:18px; padding:22px; margin-top:20px; }
+        label{ display:block; margin-bottom:10px; font-weight:bold; }
+        textarea, select{ width:100%; background:#0d0d15; color:white; border:1px solid #333342; border-radius:12px; padding:15px; font-size:16px; outline:none; margin-bottom:15px; }
+        textarea{ min-height:120px; resize:vertical; }
+        textarea:focus, select:focus{ border-color:#8b5cf6; }
+        button{ border:0; border-radius:12px; padding:14px 20px; font-size:16px; cursor:pointer; font-weight:bold; }
+        .primary{ background:#8b5cf6; color:white; width:100%; }
+        .primary:hover{background:#7c3aed}
+        .secondary{ background:#251b3d; color:#c4b5fd; padding:8px 14px; font-size:14px; margin-top:10px; }
+        .secondary:hover{ background:#322452; }
+        .result{ display:none; }
+        .scene{ background:#0d0d15; border:1px solid #292936; border-radius:14px; padding:16px; margin-top:12px; }
+        .scene h3{ margin-top:0; color:#a78bfa; }
+        .prompt{ color:#bbb; line-height:1.7; background:#12121c; padding:10px; border-radius:8px; margin:8px 0; font-family:monospace; }
+        .loading{ text-align:center; color:#a78bfa; display:none; padding:20px; }
+        footer{ text-align:center; padding:30px; color:#666; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">CineFlow <span>AI</span> 🎬</div>
+    </header>
+
+    <div class="container">
+        <div class="hero">
+            <h1>حوّل فكرتك إلى فيلم سينمائي</h1>
+            <p>أدخل فكرتك، اختر النمط، ودع النظام يصنع لك القصة والمشاهد فوراً.</p>
+        </div>
+
+        <div class="card">
+            <label for="idea">💡 فكرة الفيلم أو القصة:</label>
+            <textarea id="idea" placeholder="اكتب فكرتك هنا..."></textarea>
+
+            <label for="style">🎨 النمط البصري:</label>
+            <select id="style">
+                <option value="cinematic">سينمائي واقعي (Cinematic Realistic)</option>
+                <option value="anime">أنمي ياباني (Japanese Anime)</option>
+                <option value="dark">دراما مظلمة وغامضة (Dark Moody)</option>
+            </select>
+
+            <button class="primary" onclick="generateStory()">إنشاء الفيلم وتوليد المشاهد ✨</button>
+        </div>
+
+        <div class="loading" id="loading">
+            جاري معالجة الفكرة وتحويلها إلى مشاهد ⏳
+        </div>
+
+        <div class="result" id="result">
+            <div class="card">
+                <h2>📖 تحليل القصة</h2>
+                <div id="story"></div>
+            </div>
+
+            <div class="card">
+                <h2>🎞️ المشاهد وأوامر التوليد (Prompts)</h2>
+                <div id="scenes"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        CineFlow AI — Development V2
+    </footer>
+
+    <script>
+        function generateStory(){
+            const idea = document.getElementById("idea").value.trim();
+            const style = document.getElementById("style").value;
+            
+            if(!idea){
+                alert("الرجاء كتابة الفكرة أولاً!");
+                return;
+            }
+
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("result").style.display = "none";
+
+            setTimeout(function(){
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("result").style.display = "block";
+
+                let styleText = style === 'anime' ? 'أنمي عالي الجودة' : style === 'dark' ? 'سينمائي مظلم ودرامي' : 'سينمائي واقعي 4K';
+
+                document.getElementById("story").innerHTML = `
+                    <p><strong>الفكرة المدخلة:</strong> ${idea}</p>
+                    <p><strong>النمط المختار:</strong> ${styleText}</p>
+                    <p><strong>التصنيف:</strong> دراما سينمائية متقدمة مع حبكة مؤثرة.</p>
+                `;
+
+                document.getElementById("scenes").innerHTML = `
+                    <div class="scene">
+                        <h3>المشهد الأول: البداية والاستهلال</h3>
+                        <p>لقطة افتتاحية واسعة تظهر تفاصيل المكان والشخصية الرئيسية.</p>
+                        <div class="prompt" id="p1">cinematic opening shot, ${style}, dramatic lighting, high detail, 8k --ar 16:9</div>
+                        <button class="secondary" onclick="copyPrompt('p1')">📋 نسخ الـ Prompt</button>
+                    </div>
+                    <div class="scene">
+                        <h3>المشهد الثاني: عقدة الأحداث</h3>
+                        <p>تطور دراماتيكي يغير مجرى القصة ويخلق توترًا بصريًا.</p>
+                        <div class="prompt" id="p2">dramatic turning point scene, ${style}, emotional expression, cinematic shadows, 8k</div>
+                        <button class="secondary" onclick="copyPrompt('p2')">📋 نسخ الـ Prompt</button>
+                    </div>
+                `;
+            }, 800);
+        }
+
+        function copyPrompt(id){
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("تم نسخ الـ Prompt بنجاح! 🚀");
+            });
+        }
+    </script>
+</body>
+</html>
