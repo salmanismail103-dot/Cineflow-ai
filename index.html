@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CineFlow AI — AI Film Director</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#070812;
+  --panel:#101322;
+  --panel2:#151a2d;
+  --border:rgba(255,255,255,.09);
+  --text:#f5f7ff;
+  --muted:#9298b3;
+  --accent:#8b5cf6;
+  --accent2:#06b6d4;
+  --danger:#ef4444;
+}
+
+body{
+  min-height:100vh;
+  font-family:Arial,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 80% 0%,rgba(139,92,246,.18),transparent 30%),
+    radial-gradient(circle at 10% 30%,rgba(6,182,212,.10),transparent 25%),
+    var(--bg);
+}
+
+button,textarea,select,input{font:inherit}
+
+.app{
+  max-width:1250px;
+  margin:auto;
+  padding:22px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  padding:14px 0 28px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo-icon{
+  width:46px;
+  height:46px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  font-size:23px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 10px 35px rgba(139,92,246,.25);
+}
+
+.logo h1{
+  font-size:21px;
+}
+
+.logo span{
+  color:var(--muted);
+  font-size:12px;
+  display:block;
+  margin-top:4px;
+}
+
+.status{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.035);
+  padding:9px 13px;
+  border-radius:30px;
+  color:#b9c0d8;
+  font-size:12px;
+}
+
+.hero{
+  text-align:center;
+  padding:35px 10px 30px;
+}
+
+.badge{
+  display:inline-block;
+  padding:8px 13px;
+  border:1px solid rgba(139,92,246,.35);
+  background:rgba(139,92,246,.09);
+  color:#c7b5ff;
+  border-radius:30px;
+  font-size:12px;
+  margin-bottom:18px;
+}
+
+.hero h2{
+  font-size:clamp(30px,6vw,58px);
+  line-height:1.08;
+  letter-spacing:-2px;
+  margin-bottom:16px;
+}
+
+.gradient{
+  background:linear-gradient(90deg,#fff,#b79aff,#67e8f9);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.hero p{
+  color:var(--muted);
+  max-width:700px;
+  margin:auto;
+  line-height:1.8;
+}
+
+.workspace{
+  display:grid;
+  grid-template-columns:1.4fr .8fr;
+  gap:18px;
+}
+
+.card{
+  background:rgba(16,19,34,.82);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:20px;
+  backdrop-filter:blur(15px);
+  box-shadow:0 20px 70px rgba(0,0,0,.2);
+}
+
+.card-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.card-title h3{
+  font-size:17px;
+}
+
+.card-title small{
+  color:var(--muted);
+}
+
+textarea{
+  width:100%;
+  min-height:210px;
+  resize:vertical;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:#090c17;
+  color:white;
+  padding:17px;
+  outline:none;
+  line-height:1.8;
+}
+
+textarea:focus{
+  border-color:rgba(139,92,246,.7);
+  box-shadow:0 0 0 3px rgba(139,92,246,.08);
+}
+
+.controls{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.field label{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-bottom:7px;
+}
+
+select{
+  width:100%;
+  background:#090c17;
+  color:white;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:11px;
+  outline:none;
+}
+
+.main-btn{
+  width:100%;
+  margin-top:15px;
+  border:0;
+  border-radius:15px;
+  padding:15px;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),#6d28d9);
+  box-shadow:0 12px 30px rgba(139,92,246,.2);
+  transition:.2s;
+}
+
+.main-btn:hover{
+  transform:translateY(-1px);
+}
+
+.main-btn:disabled{
+  opacity:.6;
+  cursor:wait;
+}
+
+.features{
+  display:grid;
+  gap:11px;
+}
+
+.feature{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  padding:13px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:rgba(255,255,255,.025);
+}
+
+.feature-icon{
+  width:34px;
+  height:34px;
+  flex-shrink:0;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:rgba(139,92,246,.12);
+}
+
+.feature strong{
+  display:block;
+  font-size:13px;
+  margin-bottom:4px;
+}
+
+.feature p{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.6;
+}
+
+.result{
+  display:none;
+  margin-top:20px;
+}
+
+.result.show{
+  display:block;
+}
+
+.result-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.result-head h3{
+  font-size:20px;
+}
+
+.project-info{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.info{
+  background:#0b0e1b;
+  border:1px solid var(--border);
+  padding:13px;
+  border-radius:14px;
+}
+
+.info span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-bottom:6px;
+}
+
+.info b{
+  font-size:13px;
+}
+
+.story{
+  background:#0b0e1b;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:17px;
+  line-height:1.9;
+  color:#d9dcef;
+  margin-bottom:14px;
+}
+
+.scenes{
+  display:grid;
+  gap:12px;
+}
+
+.scene{
+  border:1px solid var(--border);
+  border-radius:17px;
+  overflow:hidden;
+  background:#0b0e1b;
+}
+
+.scene-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px;
+  background:rgba(255,255,255,.025);
+}
+
+.scene-number{
+  color:#c4b5fd;
+  font-weight:bold;
+}
+
+.scene-duration{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.scene-body{
+  padding:15px;
+}
+
+.scene-body h4{
+  margin-bottom:7px;
+}
+
+.scene-body p{
+  color:#aeb4ca;
+  font-size:13px;
+  line-height:1.8;
+}
+
+.prompt{
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  background:#070a13;
+  border:1px dashed rgba(255,255,255,.1);
+  color:#9fa7c1;
+  font-size:11px;
+  line-height:1.7;
+}
+
+.scene-actions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+
+.small-btn{
+  border:1px solid var(--border);
+  background:#121629;
+  color:#dce1f5;
+  padding:8px 11px;
+  border-radius:9px;
+  cursor:pointer;
+  font-size:11px;
+}
+
+.video-btn{
+  background:linear-gradient(135deg,#0891b2,#06b6d4);
+  border:0;
+}
+
+.timeline{
+  margin-top:20px;
+}
+
+.timeline-bar{
+  display:flex;
+  gap:5px;
+  height:42px;
+  margin-top:12px;
+}
+
+.timeline-segment{
+  flex:1;
+  border-radius:9px;
+  background:linear-gradient(135deg,#312e81,#0e7490);
+  display:grid;
+  place-items:center;
+  font-size:10px;
+  color:#dbeafe;
+}
+
+.empty{
+  color:var(--muted);
+  text-align:center;
+  padding:25px;
+}
+
+.footer{
+  text-align:center;
+  color:#626980;
+  font-size:11px;
+  padding:30px 0 10px;
+}
+
+@media(max-width:800px){
+  .workspace{
+    grid-template-columns:1fr;
+  }
+
+  .controls,
+  .project-info{
+    grid-template-columns:1fr;
+  }
+
+  .hero h2{
+    letter-spacing:-1px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="topbar">
+    <div class="logo">
+      <div class="logo-icon">🎬</div>
+      <div>
+        <h1>CineFlow AI</h1>
+        <span>AI Film Director</span>
+      </div>
+    </div>
+
+    <div class="status">● Prototype Studio</div>
+  </header>
+
+  <section class="hero">
+    <div class="badge">✨ من الفكرة إلى الفيلم</div>
+
+    <h2>
+      حوّل فكرتك إلى
+      <span class="gradient">فيلم سينمائي</span>
+    </h2>
+
+    <p>
+      اكتب فكرتك فقط، وسيقوم CineFlow AI ببناء الهيكل الأولي للفيلم،
+      من القصة إلى المشاهد والـ prompts بطريقة منظمة.
+    </p>
+  </section>
+
+  <section class="workspace">
+
+    <div class="card">
+
+      <div class="card-title">
+        <h3>🎥 فكرة الفيلم</h3>
+        <small>ابدأ من أي فكرة</small>
+      </div>
+
+      <textarea id="idea" placeholder="مثال:
+شاب يعيش في مدينة لا ينام فيها أحد، ويكتشف ذات ليلة أن أحلام الناس أصبحت تتحقق في الواقع..."></textarea>
+
+      <div class="controls">
+
+        <div class="field">
+          <label>نوع الفيلم</label>
+          <select id="genre">
+            <option>سينمائي</option>
+            <option>خيال علمي</option>
+            <option>رعب</option>
+            <option>دراما</option>
+            <option>أكشن</option>
+            <option>غموض</option>
+            <option>رومانسي</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>المدة</label>
+          <select id="duration">
+            <option>1 دقيقة</option>
+            <option>3 دقائق</option>
+            <option>5 دقائق</option>
+            <option>10 دقائق</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>الأسلوب</label>
+          <select id="style">
+            <option>سينمائي واقعي</option>
+            <option>مظلم ودرامي</option>
+            <option>ملحمي</option>
+            <option>أنيمي</option>
+            <option>مستقبلي</option>
+          </select>
+        </div>
+
+      </div>
+
+      <button class="main-btn" id="generateBtn" onclick="generateFilm()">
+        ✨ إنشاء الفيلم
+      </button>
+
+    </div>
+
+    <div class="card">
+
+      <div class="card-title">
+        <h3>⚡ أدوات CineFlow</h3>
+        <small>Workflow</small>
+      </div>
+
+      <div class="features">
+
+        <div class="feature">
+          <div class="feature-icon">🧠</div>
+          <div>
+            <strong>Story Engine</strong>
+            <p>تحويل الفكرة إلى هيكل قصة واضح.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">🎞️</div>
+          <div>
+            <strong>Scene Director</strong>
+            <p>تقسيم الفيلم إلى مشاهد قابلة للتطوير.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">🎨</div>
+          <div>
+            <strong>Visual Prompts</strong>
+            <p>إنشاء وصف بصري مخصص لكل مشهد.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">🎬</div>
+          <div>
+            <strong>Film Timeline</strong>
+            <p>تصور أولي لترتيب المشاهد والزمن.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="card result" id="result">
+
+    <div class="result-head">
+      <h3>🎬 مشروعك السينمائي</h3>
+      <small id="projectStatus">جاهز</small>
+    </div>
+
+    <div class="project-info">
+
+      <div class="info">
+        <span>النوع</span>
+        <b id="resultGenre">—</b>
+      </div>
+
+      <div class="info">
+        <span>المدة</span>
+        <b id="resultDuration">—</b>
+      </div>
+
+      <div class="info">
+        <span>الأسلوب</span>
+        <b id="resultStyle">—</b>
+      </div>
+
+    </div>
+
+    <div class="story">
+      <strong>💡 الرؤية السينمائية</strong>
+      <p id="storyText" style="margin-top:8px"></p>
+    </div>
+
+    <div class="card-title">
+      <h3>🎞️ المشاهد</h3>
+      <small>Storyboard</small>
+    </div>
+
+    <div class="scenes" id="scenes"></div>
+
+    <div class="timeline">
+
+      <div class="card-title">
+        <h3>⏱️ Timeline</h3>
+        <small>ترتيب الفيلم</small>
+      </div>
+
+      <div class="timeline-bar" id="timeline"></div>
+
+    </div>
+
+  </section>
+
+  <footer class="footer">
+    CineFlow AI © 2026 — AI Film Director
+  </footer>
+
+</div>
+
+<script>
+
+function generateFilm(){
+
+  const idea=document.getElementById("idea").value.trim();
+
+  if(!idea){
+    alert("اكتب فكرة الفيلم أولاً ✨");
+    return;
+  }
+
+  const btn=document.getElementById("generateBtn");
+
+  btn.disabled=true;
+  btn.innerHTML="⏳ يقوم CineFlow ببناء الفيلم...";
+
+  document.getElementById("result").classList.remove("show");
+
+  setTimeout(()=>{
+
+    const genre=document.getElementById("genre").value;
+    const duration=document.getElementById("duration").value;
+    const style=document.getElementById("style").value;
+
+    document.getElementById("resultGenre").textContent=genre;
+    document.getElementById("resultDuration").textContent=duration;
+    document.getElementById("resultStyle").textContent=style;
+
+    document.getElementById("storyText").textContent=
+      "تدور الرؤية السينمائية حول: "+idea+
+      " تبدأ القصة بلحظة غامضة تضع الشخصية الرئيسية أمام مشكلة غير متوقعة، "+
+      "ثم تتصاعد الأحداث تدريجيًا حتى تصل إلى نقطة تحول رئيسية، "+
+      "قبل أن تنتهي القصة بلحظة تحمل معنى بصريًا وعاطفيًا قويًا.";
+
+    createScenes(idea,genre,style);
+
+    document.getElementById("result").classList.add("show");
+
+    document.getElementById("projectStatus").textContent="تم إنشاء المسودة";
+
+    btn.disabled=false;
+    btn.innerHTML="✨ إعادة إنشاء الفيلم";
+
+    document.getElementById("result").scrollIntoView({
+      behavior:"smooth"
+    });
+
+  },900);
+}
+
+
+function createScenes(idea,genre,style){
+
+  const scenes=document.getElementById("scenes");
+  const timeline=document.getElementById("timeline");
+
+  scenes.innerHTML="";
+  timeline.innerHTML="";
+
+  const sceneData=[
+
+    {
+      title:"البداية — العالم",
+      description:"لقطة افتتاحية تقدم العالم والشخصية الرئيسية وتزرع السؤال الأول في ذهن المشاهد.",
+      prompt:"Cinematic establishing shot, "+style+", atmospheric lighting, detailed environment, dramatic composition, film still, 16:9"
+    },
+
+    {
+      title:"الشرارة — الحدث",
+      description:"يحدث أمر غير متوقع يغير مسار الشخصية ويبدأ الصراع الرئيسي.",
+      prompt:"Cinematic close-up, emotional character reaction, "+style+", dramatic lighting, realistic details, shallow depth of field, 16:9"
+    },
+
+    {
+      title:"التصاعد — الصراع",
+      description:"تبدأ المخاطر بالارتفاع وتضطر الشخصية إلى اتخاذ قرار صعب.",
+      prompt:"Intense cinematic scene, high emotional tension, "+style+", dynamic camera, volumetric lighting, detailed characters, 16:9"
+    },
+
+    {
+      title:"النهاية — التحول",
+      description:"تصل القصة إلى لحظة التحول النهائية وتترك أثرًا بصريًا وعاطفيًا.",
+      prompt:"Epic cinematic finale, powerful atmosphere, "+style+", dramatic composition, beautiful lighting, emotional ending, film still, 16:9"
+    }
+
+  ];
+
+  sceneData.forEach((scene,index)=>{
+
+    const article=document.createElement("article");
+
+    article.className="scene";
+
+    article.innerHTML=`
+
+      <div class="scene-top">
+        <span class="scene-number">المشهد ${index+1}</span>
+        <span class="scene-duration">${index===0?"0:00":index===1?"0:15":index===2?"0:30":"0:45"}</span>
+      </div>
+
+      <div class="scene-body">
+
+        <h4>${scene.title}</h4>
+
+        <p>${scene.description}</p>
+
+        <div class="prompt">
+          <strong>🎨 Visual Prompt</strong><br>
+          ${scene.prompt}
+        </div>
+
+        <div class="scene-actions">
+
+          <button class="small-btn" onclick="copyPrompt(this)">
+            📋 نسخ Prompt
+          </button>
+
+          <button class="small-btn video-btn" onclick="videoMessage()">
+            🎬 إنشاء فيديو
+          </button>
+
+        </div>
+
+      </div>
+    `;
+
+    scenes.appendChild(article);
+
+    const segment=document.createElement("div");
+
+    segment.className="timeline-segment";
+    segment.textContent="Scene "+(index+1);
+
+    timeline.appendChild(segment);
+
+  });
+
+}
+
+
+function copyPrompt(button){
+
+  const prompt=button.closest(".scene-body").querySelector(".prompt").innerText;
+
+  navigator.clipboard.writeText(prompt).then(()=>{
+
+    const old=button.innerHTML;
+
+    button.innerHTML="✓ تم النسخ";
+
+    setTimeout(()=>{
+      button.innerHTML=old;
+    },1200);
+
+  });
+
+}
+
+
+function videoMessage(){
+
+  alert(
+    "🎬 مولد الفيديو سيكون المرحلة التالية في CineFlow AI.\n\n"+
+    "هذه النسخة جهزت البنية والمشاهد والـPrompts، "+
+    "وسنربطها لاحقًا بمحرك توليد فيديو حقيقي."
+  );
+
+}
+
+</script>
+
+</body>
+  </html>
