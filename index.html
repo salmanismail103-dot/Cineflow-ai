@@ -630,7 +630,7 @@ function generateFilm(){
 
 
 
-if(!idea){
+if(!
 alert("اكتب فكرة الفيلم أولاً ✨");
 return;
 }
@@ -752,53 +752,7 @@ behavior:"smooth"
 
 },900);
 
-}
 
-  
-
-  if(!idea){
-    alert("اكتب فكرة الفيلم أولاً ✨");
-    return;
-  }
-
-  const btn=document.getElementById("generateBtn");
-
-  btn.disabled=true;
-  btn.innerHTML="⏳ يقوم CineFlow ببناء الفيلم...";
-
-  document.getElementById("result").classList.remove("show");
-
-  setTimeout(()=>{
-
-    const genre=document.getElementById("genre").value;
-    const duration=document.getElementById("duration").value;
-    const style=document.getElementById("style").value;
-
-    document.getElementById("resultGenre").textContent=genre;
-    document.getElementById("resultDuration").textContent=duration;
-    document.getElementById("resultStyle").textContent=style;
-
-    document.getElementById("storyText").textContent=
-      "تدور الرؤية السينمائية حول: "+idea+
-      " تبدأ القصة بلحظة غامضة تضع الشخصية الرئيسية أمام مشكلة غير متوقعة، "+
-      "ثم تتصاعد الأحداث تدريجيًا حتى تصل إلى نقطة تحول رئيسية، "+
-      "قبل أن تنتهي القصة بلحظة تحمل معنى بصريًا وعاطفيًا قويًا.";
-
-    createScenes(idea,genre,style);
-
-    document.getElementById("result").classList.add("show");
-
-    document.getElementById("projectStatus").textContent="تم إنشاء المسودة";
-
-    btn.disabled=false;
-    btn.innerHTML="✨ إعادة إنشاء الفيلم";
-
-    document.getElementById("result").scrollIntoView({
-      behavior:"smooth"
-    });
-
-  },900);
-}
 
 
 function createScenes(idea,genre,style){
