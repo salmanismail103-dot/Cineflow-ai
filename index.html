@@ -1042,10 +1042,19 @@ alert("تم تشغيل دالة إنشاء الفيديو");
     const data = await response.json();
 
     if(!response.ok || !data.ok){
-      throw new Error(
-        data.error || "فشل الاتصال بمحرك الفيديو"
-      );
-    }
+
+  let details = data.details;
+
+  if(typeof details === "object"){
+    details = JSON.stringify(details, null, 2);
+  }
+
+  throw new Error(
+    details ||
+    data.error ||
+    "فشل الاتصال بمحرك الفيديو"
+  );
+                             }
 
     alert(
       "🎬 بدأ إنشاء الفيديو!\n\nTask ID:\n" +
