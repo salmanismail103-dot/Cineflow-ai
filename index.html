@@ -729,85 +729,164 @@ function generateFilm(){
 }
 
 
-function createScenes(idea, genre, style, duration){
 
+function createScenes(idea, genre, style, duration) {
   const scenes = document.getElementById("scenes");
   const timeline = document.getElementById("timeline");
 
-  if(!scenes || !timeline){
-    return;
-  }
+  if (!scenes || !timeline) return;
 
   scenes.innerHTML = "";
   timeline.innerHTML = "";
 
+  const filmIdea = String(idea || "").trim();
+  const filmGenre = String(genre || "Drama").trim();
+  const filmStyle = String(style || "Cinematic realism").trim();
+
+  const continuity =
+    "Maintain strict visual continuity across all four scenes: " +
+    "the same main character, same facial features, age, hairstyle, " +
+    "clothing, accessories and color palette. Keep the story world " +
+    "consistent. Cinematic natural movement, believable emotions, " +
+    "professional film lighting, coherent spatial geography, " +
+    "high detail, intentional composition, widescreen 16:9. ";
+
   const sceneData = [
-
     {
-      title:"البداية — العالم والشخصية",
-
+      title: "البداية — تأسيس العالم والشخصية",
       description:
-      "لقطة افتتاحية تقدم العالم والشخصية الرئيسية وتحوّل الفكرة إلى صورة سينمائية واضحة.",
-
-      prompt:
-      "Cinematic establishing shot, " +
-      genre +
-      ", " +
-      style +
-      ", based on: " +
-      idea +
-      ", atmospheric lighting, detailed environment, realistic characters, cinematic composition, film still, 16:9"
+        "تقديم الشخصية الرئيسية ومكان الأحداث، مع إظهار حالتها النفسية قبل بدء التحول.",
+      action:
+        "Establish the main character and environment. Show a quiet, " +
+        "meaningful moment that reveals the character's current emotional state.",
+      camera:
+        "Wide establishing shot, slow cinematic push-in, eye-level camera, " +
+        "layered foreground and background.",
+      emotion:
+        "Subtle emotion expressed through posture, eyes and natural body language.",
+      lighting:
+        "Atmospheric lighting, realistic shadows, carefully controlled color palette."
     },
-
     {
-      title:"الشرارة — الحدث الرئيسي",
-
+      title: "الشرارة — الحدث الذي يغيّر كل شيء",
       description:
-      "يحدث أمر غير متوقع يغيّر مسار القصة ويبدأ الصراع الحقيقي.",
-
-      prompt:
-      "Cinematic medium shot, emotional character reaction, " +
-      genre +
-      ", " +
-      style +
-      ", story moment: " +
-      idea +
-      ", dramatic lighting, shallow depth of field, realistic details, 16:9"
+        "حدث واضح يكسر هدوء البداية ويمنح الشخصية سببًا للتحرك أو اتخاذ قرار.",
+      action:
+        "Introduce one specific story-changing event connected directly to the original idea. " +
+        "Show the character noticing or reacting to it.",
+      camera:
+        "Medium shot transitioning to a close-up, deliberate camera movement, " +
+        "clear visual focus on the important event.",
+      emotion:
+        "A readable emotional shift: surprise, longing, fear, hope or tension, " +
+        "chosen to fit the story.",
+      lighting:
+        "Motivated cinematic lighting that subtly increases dramatic tension."
     },
-
     {
-      title:"التصاعد — الصراع",
-
+      title: "التصاعد — الصراع والقرار",
       description:
-      "ترتفع المخاطر وتصبح الشخصية مضطرة لاتخاذ قرار صعب بينما يزداد التوتر.",
-
-      prompt:
-      "Intense cinematic scene, high emotional tension, " +
-      genre +
-      ", " +
-      style +
-      ", based on: " +
-      idea +
-      ", dynamic camera, volumetric lighting, detailed characters, cinematic atmosphere, 16:9"
+        "تواجه الشخصية عقبة حقيقية، وتظهر مشاعرها من خلال فعل بصري لا من خلال الوصف فقط.",
+      action:
+        "Show the main character confronting the central obstacle. " +
+        "Use a visible action and a meaningful choice rather than a generic montage.",
+      camera:
+        "Dynamic medium shot, purposeful tracking movement, selective close-ups, " +
+        "clear screen direction and spatial continuity.",
+      emotion:
+        "Strong but believable emotional conflict expressed through facial expression, " +
+        "gestures and interaction with the environment.",
+      lighting:
+        "More dramatic contrast while preserving realistic skin tones and scene continuity."
     },
-
     {
-      title:"النهاية — التحول",
-
+      title: "النهاية — التحول والأثر العاطفي",
       description:
-      "تصل القصة إلى لحظة التحول النهائية وتترك أثرًا بصريًا وعاطفيًا قويًا لدى المشاهد.",
-
-      prompt:
-      "Epic cinematic finale, " +
-      genre +
-      ", " +
-      style +
-      ", final moment inspired by: " +
-      idea +
-      ", dramatic composition, cinematic lighting, emotional ending, film still, 16:9"
+        "نتيجة واضحة لما حدث، مع لقطة ختامية تعكس التغير الذي طرأ على الشخصية.",
+      action:
+        "Resolve the main emotional question with a specific visual consequence. " +
+        "Connect the ending to the opening and leave one memorable final image.",
+      camera:
+        "Carefully composed final shot, gentle camera movement or a deliberate still frame, " +
+        "natural cinematic depth.",
+      emotion:
+        "A restrained emotional payoff appropriate to the story: relief, grief, " +
+        "reconciliation, hope or unresolved longing.",
+      lighting:
+        "A visually meaningful final lighting change that remains consistent with the film's style."
     }
-
   ];
+
+  const totalMinutes = Math.max(1, Number(duration) || 1);
+  const totalSeconds = totalMinutes * 60;
+
+  sceneData.forEach(function(scene, index) {
+    const article = document.createElement("article");
+    article.className = "scene";
+
+    const seconds = Math.round((totalSeconds * index) / 4);
+    const time =
+      Math.floor(seconds / 60) +
+      ":" +
+      String(seconds % 60).padStart(2, "0");
+
+    const prompt =
+      "Create scene " + (index + 1) + " of a coherent cinematic film. " +
+      "Original story idea: " + filmIdea + ". " +
+      "Genre: " + filmGenre + ". Visual style: " + filmStyle + ". " +
+      "Scene purpose: " + scene.action + " " +
+      "Camera direction: " + scene.camera + " " +
+      "Emotional direction: " + scene.emotion + " " +
+      "Lighting and atmosphere: " + scene.lighting + " " +
+      continuity +
+      "No random character redesign, no unexplained wardrobe changes, " +
+      "no inconsistent facial features, no text overlays, no subtitles, " +
+      "no logos. Make this shot visually specific and directly relevant to the story.";
+
+    scene.prompt = prompt;
+
+    article.innerHTML = `
+      <div class="scene-top">
+        <span class="scene-number">المشهد ${index + 1}</span>
+        <span class="scene-duration">${time}</span>
+      </div>
+
+      <div class="scene-body">
+        <h4>${escapeHtml(scene.title)}</h4>
+        <p>${escapeHtml(scene.description)}</p>
+
+        <div class="prompt">
+          <strong>🎨 Visual Prompt</strong>
+          <br>
+          ${escapeHtml(scene.prompt)}
+        </div>
+
+        <div class="scene-actions">
+          <button
+            class="small-btn"
+            onclick="copyPrompt(this)">
+            📋 نسخ Prompt
+          </button>
+
+          <button
+            class="small-btn video-btn"
+            onclick="videoMessage(this)">
+            🎬 إنشاء فيديو
+          </button>
+        </div>
+      </div>
+    `;
+
+    scenes.appendChild(article);
+
+    const segment = document.createElement("div");
+    segment.className = "timeline-segment";
+    segment.textContent = "Scene " + (index + 1);
+    segment.title = time + " — " + scene.title;
+
+    timeline.appendChild(segment);
+  });
+  }
 
 
   sceneData.forEach(function(scene,index){
