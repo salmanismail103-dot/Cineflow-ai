@@ -750,6 +750,7 @@ function createScenes(idea, genre, style, duration) {
   timeline.innerHTML = "";
 
   const filmIdea = String(idea || "").trim();
+  const characterDescription = (document.getElementById("character")?.value || "").trim();
   const filmGenre = String(genre || "Drama").trim();
   const filmStyle = String(style || "Cinematic realism").trim();
 
