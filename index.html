@@ -760,6 +760,7 @@ function createScenes(idea, genre, style, duration) {
 
   const filmIdea = String(idea || "").trim();
   const characterDescription = (document.getElementById("character")?.value || "").trim();
+  const characterGender = document.getElementById("characterGender")?.value || "unspecified";
   const filmGenre = String(genre || "Drama").trim();
   const filmStyle = String(style || "Cinematic realism").trim();
 
