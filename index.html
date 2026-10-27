@@ -826,7 +826,8 @@ function createScenes(idea, genre, style, duration) {
       "Story idea: " + filmIdea + ". " +
       "Genre: " + filmGenre + ". Style: " + filmStyle + ". " +
        "Main character gender: " + (characterGender === "male" ? "male" : characterGender === "female" ? "female" : "choose according to the story") + ". " +
-"Main character appearance: " + (characterDescription || "Create a suitable character for the story") + ". Keep this exact appearance consistent in every scene. " +
+       "Main character age: " + (characterAge ? characterAge + " years old" : "choose an age suitable for the story") + ". " +
+      "Main character appearance: " + (characterDescription || "Create a suitable character for the story") + ". Keep this exact appearance consistent in every scene. " +
       "Action: " + scene.action + " " +
       "Camera: " + scene.camera + " " +
       "Emotion: " + scene.emotion + " " +
